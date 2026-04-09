@@ -52,6 +52,16 @@ if student_id and student_name:
         
         # スプレッドシートの「answers」シートに追記
         # ※実際の運用時は conn.create(worksheet="answers", data=...) 等を使用
+
+        # --- ここから追加 ---
+        # 既存の回答を読み込んで、新しい回答をくっつける
+        existing_answers = conn.read(worksheet="answers")
+        updated_answers = pd.concat([existing_answers, new_answer], ignore_index=True)
+        
+        # スプレッドシートを更新（書き込み）
+        conn.update(worksheet="answers", data=updated_answers)
+        # --- ここまで追加 ---
+
         st.success(f"送信完了！ 正解は「{q_data['正解']}」でした。")
         st.balloons()
         
