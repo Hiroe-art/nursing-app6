@@ -67,7 +67,7 @@ if st.button("回答を送信する"):
 
     # 4. 裏側で送信！
    # 中略
-  try:
+    try:
         requests.post(form_url, data=params)
         st.success(f"送信完了！ 正解は「{q_data['正解']}」でした。")
         st.balloons()
@@ -77,7 +77,7 @@ if st.button("回答を送信する"):
     # --- try-exceptの外側（左端）に揃える ---
     st.divider()  # 区切り線
 
-    if st.button("アプリを終了してログイン画面に戻る"):
+        if st.button("アプリを終了してログイン画面に戻る"):
         # 1. ここを「右にスペース4つ分」ズラす（ボタンが押された時の処理）
         for key in list(st.session_state.keys()):
             # 2. ここは「さらに右にスペース4つ分」ズラす（繰り返しの処理）
