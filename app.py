@@ -30,7 +30,7 @@ if "target_q_id" not in st.session_state:
     st.session_state.target_q_id = random.choice(df_questions["問題ID"].tolist())
 
 q_id = st.session_state.target_q_id
-    st.write(f"### 今日の挑戦問題：{q_id}")
+st.write(f"### 今日の挑戦問題：{q_id}")
 q_data = df_questions[df_questions["id"] == q_id].iloc[0]
 
 st.subheader(f"分野: {q_data['分野']}")
