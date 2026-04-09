@@ -77,12 +77,6 @@ if st.button("回答を送信する"):
     # --- try-exceptの外側（左端に揃える）に移動させる ---
     st.divider()  # 区切り線
     
-    if st.button("アプリを終了する"):
-        st.session_state.clear()
-        st.write("### お疲れ様でした！")
-        st.write("このままブラウザを閉じて終了してください。")
-        st.stop()
-
     if st.button("アプリを終了してログイン画面に戻る"):
     # 1. 入力された学籍番号や氏名、選ばれた問題IDをすべて消去する
     for key in list(st.session_state.keys()):
