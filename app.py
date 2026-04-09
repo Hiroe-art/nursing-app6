@@ -27,7 +27,7 @@ if student_id and student_name:
 # 2. 問題の表示（今回は試作として3問からランダムまたは選択）
 if "target_q_id" not in st.session_state:
     # まだ問題が選ばれていない場合、リストからランダムに1つ選んで保持する
-    st.session_state.target_q_id = random.choice(df_questions["問題ID"].tolist())
+    st.session_state.target_q_id = random.choice(df_questions["id"].tolist())
 
 q_id = st.session_state.target_q_id
 st.write(f"### 今日の挑戦問題：{q_id}")
