@@ -9,7 +9,7 @@ st.set_page_config(page_title="国試対策プロトタイプ")
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # 問題データの読み込み
-df_questions = conn.read()
+df_questions = conn.read(spreadsheet="https://docs.google.com/spreadsheets/d/1ZqpqYB5a3BZ--cjB-KGufhXTH6jPeocC-wPbEXVS_ZQ/edit?usp=sharing")
 
 st.title("🩺 看護師国試 対策プロトタイプ")
 
