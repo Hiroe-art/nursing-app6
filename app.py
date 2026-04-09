@@ -31,13 +31,19 @@ if "target_q_id" not in st.session_state:
 
 q_id = st.session_state.target_q_id
 st.write(f"### 今日の挑戦問題：{q_id}")
-q_data = df_questions[df_questions["id"] == q_id].iloc[0]
+
+# 修正ポイント①：df_questions["id"] を ["問題ID"] に合わせる（スプレッドシートの見出しと一致させる）
+q_data = df_questions[df_questions["問題ID"] == q_id].iloc[0]
 
 st.subheader(f"分野: {q_data['分野']}")
-    st.info(q_data["問題文"])
-    
-    options = [q_data["選択肢1"], q_data["選択肢2"], q_data["選択肢3"], q_data["選択肢4"]]
-    answer = st.radio("答えを選んでください", options)
+
+# 修正ポイント②：行の先頭の「余計な空白」を消して、左端に揃える
+st.info(q_data["問題文"])
+
+options = [q_data["選択肢1"], q_data["選択肢2"], q_data["選択肢3"], q_data["選択肢4"]]
+
+# 修正ポイント③：行の先頭の空白を消し、最後にある「 } 」を削除する
+answer = st.radio("答えを選んでください", options)
     
 # 「なぜ？」の入力欄
 st.warning("🧐 **なぜその選択肢を選びましたか？（根拠を記入）**")
