@@ -75,12 +75,12 @@ if st.button("回答を送信する"):
         st.error(f"送信時にエラーが発生しました: {e}")
 
     # --- try-exceptの外側（左端に揃える）に移動させる ---
-    st.divider()  # 区切り線
+        st.divider()  # 区切り線
     
-    if st.button("アプリを終了してログイン画面に戻る"):
+        if st.button("アプリを終了してログイン画面に戻る"):
     # 1. 入力された学籍番号や氏名、選ばれた問題IDをすべて消去する
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
     
     # 2. アプリを強制的に「最初から」の状態にして再起動する
     st.rerun()
