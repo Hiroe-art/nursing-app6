@@ -55,11 +55,8 @@ if student_id and student_name:
 
         # --- ここから追加 ---
         # 既存の回答を読み込んで、新しい回答をくっつける
-        existing_answers = conn.read(spreadsheet="https://docs.google.com/spreadsheets/d/1ZqpqYB5a3BZ--cjB-KGufhXTH6jPeocC-wPbEXVS_ZQ/edit")
-        updated_answers = pd.concat([existing_answers, new_answer], ignore_index=True)
-        
-        # スプレッドシートを更新（書き込み）
-        conn.update(worksheet="answers", data=updated_answers)
+        # --- 58行目から62行目あたりをこれ1行に書き換える ---
+        conn.create(spreadsheet="https://docs.google.com/spreadsheets/d/1ZqpqYB5a3BZ--cjB-KGufhXTH6jPeocC-wPbEXVS_ZQ/edit?usp=sharing", worksheet="answers", data=new_answer)
         # --- ここまで追加 ---
 
         st.success(f"送信完了！ 正解は「{q_data['正解']}」でした。")
