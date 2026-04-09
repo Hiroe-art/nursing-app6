@@ -70,6 +70,16 @@ if st.button("回答を送信する"):
         requests.post(form_url, data=params) # これがスプレッドシートへの記録の代わりです
         st.success(f"送信完了！ 正解は「{q_data['正解']}」でした。")
         st.balloons()
+st.divider()  # 区切り線を入れて見やすくします
+        
+        if st.button("アプリを終了する"):
+            # セッションをクリアして個人情報を消す
+            st.session_state.clear()
+            st.write("### お疲れ様でした！")
+            st.write("回答は無事に記録されました。ブラウザのタブを閉じて終了してください。")
+            # これ以降の表示を止める
+            st.stop()
+    
     except Exception as e:
         st.error(f"送信時にエラーが発生しました: {e}")
 
