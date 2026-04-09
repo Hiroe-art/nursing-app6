@@ -4,7 +4,7 @@ import pandas as pd
 import datetime
 import requests  # ← これが追加されているか確認！
 
-st.set_page_config(page_title="国試対策プロトタイプ")
+st.set_page_config(page_title="2年生国試対策")
 
 # --- Googleスプレッドシートへの接続 ---
 conn = st.connection("gsheets", type=GSheetsConnection)
