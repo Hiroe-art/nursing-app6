@@ -64,25 +64,24 @@ if st.button("回答を送信する"):
         "entry.1974944765": student_name,  # 氏名
         # 「問題ID」や「振り返り」をフォームに追加した場合は、ここも増やします
     }
-    
+
     # 4. 裏側で送信！
+   # 中略
     try:
-        requests.post(form_url, data=params) # これがスプレッドシートへの記録の代わりです
+        requests.post(form_url, data=params)
         st.success(f"送信完了！ 正解は「{q_data['正解']}」でした。")
         st.balloons()
-st.divider()  # 区切り線を入れて見やすくします
-        
-        if st.button("アプリを終了する"):
-            # セッションをクリアして個人情報を消す
-            st.session_state.clear()
-            st.write("### お疲れ様でした！")
-            st.write("回答は無事に記録されました。ブラウザのタブを閉じて終了してください。")
-            # これ以降の表示を止める
-            st.stop()
-    
     except Exception as e:
         st.error(f"送信時にエラーが発生しました: {e}")
 
+    # --- try-exceptの外側（左端に揃える）に移動させる ---
+    st.divider()  # 区切り線
+    if st.button("アプリを終了する"):
+        st.session_state.clear()
+        st.write("### お疲れ様でした！")
+        st.write("このままブラウザを閉じて終了してください。")
+        st.stop()
+    
     # 元々あった conn.read や conn.update の古いコードは削除してください
 
         # --- ここから追加 ---
