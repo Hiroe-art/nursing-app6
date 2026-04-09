@@ -55,7 +55,7 @@ if student_id and student_name:
 
         # --- ここから追加 ---
         # 既存の回答を読み込んで、新しい回答をくっつける
-        existing_answers = conn.read(worksheet="answers")
+        existing_answers = conn.read(spreadsheet="https://docs.google.com/spreadsheets/d/1ZqpqYB5a3BZ--cjB-KGufhXTH6jPeocC-wPbEXVS_ZQ/edit?usp=sharing", worksheet="answers")
         updated_answers = pd.concat([existing_answers, new_answer], ignore_index=True)
         
         # スプレッドシートを更新（書き込み）
