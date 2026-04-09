@@ -15,14 +15,25 @@ df_questions = conn.read(spreadsheet="https://docs.google.com/spreadsheets/d/1Zq
 
 st.title("🩺 ２年生国家試験対策")
 
-# 1. ログイン（学籍番号・氏名入力）
+# --- ログイン（学籍番号・氏名入力） ---
 with st.container():
     col1, col2 = st.columns(2)
     student_id = col1.text_input("学籍番号を入力してください")
     student_name = col2.text_input("氏名を入力してください")
 
+# ★ここから新しく「if」を追加し、以下すべてのコードを「右に4つ」ズラす
 if student_id and student_name:
     st.divider()
+    
+    # 2. 問題の表示（ここから下の行はすべて、この if の中身として右にズラす）
+    if "target_q_id" not in st.session_state:
+        st.session_state.target_q_id = random.choice(df_questions["id"].tolist())
+    
+    # ...（中略：問題表示や送信ボタンのコードが続く）...
+
+else:
+    # まだ名前が入っていない時に表示される画面
+    st.info("👆 学籍番号と氏名を入力すると、問題が表示されます。")
     
 # 2. 問題の表示（今回は試作として3問からランダムまたは選択）
 if "target_q_id" not in st.session_state:
