@@ -47,7 +47,7 @@ answer = st.radio("答えを選んでください", options)
     
 # 「なぜ？」の入力欄
 st.warning("🧐 **なぜその選択肢を選びましたか？（根拠を記入）**")
-    reflection = st.text_area("振り返り入力", placeholder="例：〇〇の作用により血管が収縮するため")
+reflection = st.text_area("振り返り入力", placeholder="例：〇〇の作用により血管が収縮するため")
 
    # --- 50行目付近にあるはずの送信ボタン ---
 if st.button("回答を送信する"):
