@@ -67,23 +67,26 @@ if st.button("回答を送信する"):
 
     # 4. 裏側で送信！
    # 中略
-    try:
+  try:
         requests.post(form_url, data=params)
         st.success(f"送信完了！ 正解は「{q_data['正解']}」でした。")
         st.balloons()
     except Exception as e:
         st.error(f"送信時にエラーが発生しました: {e}")
 
-    # --- try-exceptの外側（左端に揃える）に移動させる ---
-        st.divider()  # 区切り線
-    
-        if st.button("アプリを終了してログイン画面に戻る"):
-    # 1. 入力された学籍番号や氏名、選ばれた問題IDをすべて消去する
+    # --- try-exceptの外側（左端）に揃える ---
+    st.divider()  # 区切り線
+
+    if st.button("アプリを終了してログイン画面に戻る"):
+        # 1. ここを「右にスペース4つ分」ズラす（ボタンが押された時の処理）
         for key in list(st.session_state.keys()):
+            # 2. ここは「さらに右にスペース4つ分」ズラす（繰り返しの処理）
             del st.session_state[key]
+        
+        # 最後に画面をリフレッシュ（これもボタンの中身なので右にズラす）
+        st.rerun()
+
     
-    # 2. アプリを強制的に「最初から」の状態にして再起動する
-    st.rerun()
     # 元々あった conn.read や conn.update の古いコードは削除してください
 
         # --- ここから追加 ---
