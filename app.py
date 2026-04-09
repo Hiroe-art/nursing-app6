@@ -12,7 +12,7 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 # 問題データの読み込み
 df_questions = conn.read(spreadsheet="https://docs.google.com/spreadsheets/d/1ZqpqYB5a3BZ--cjB-KGufhXTH6jPeocC-wPbEXVS_ZQ/edit?usp=sharing")
 
-st.title("🩺 看護師国試 対策プロトタイプ")
+st.title("🩺 ２年生国家試験対策")
 
 # 1. ログイン（学籍番号・氏名入力）
 with st.container():
