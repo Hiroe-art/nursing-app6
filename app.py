@@ -1,116 +1,82 @@
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
-import datetime
-import requests 
-import random  
+import requests
+import random
 
+# アプリの設定
 st.set_page_config(page_title="2年生国試対策")
+st.title("🩺 ２年生国家試験対策")
 
-# --- Googleスプレッドシートへの接続 ---
+# --- 1. Googleスプレッドシートへの接続 ---
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # 問題データの読み込み
 df_questions = conn.read(spreadsheet="https://docs.google.com/spreadsheets/d/1ZqpqYB5a3BZ--cjB-KGufhXTH6jPeocC-wPbEXVS_ZQ/edit?usp=sharing")
 
-st.title("🩺 ２年生国家試験対策")
-
-# --- ログイン（学籍番号・氏名入力） ---
+# --- 2. ログイン画面（学籍番号・氏名入力） ---
 with st.container():
     col1, col2 = st.columns(2)
-    student_id = col1.text_input("学籍番号を入力してください")
-    student_name = col2.text_input("氏名を入力してください")
+    # keyを設定することで、ログアウト時に確実に消去できるようにします
+    student_id = col1.text_input("学籍番号を入力してください", key="s_id")
+    student_name = col2.text_input("氏名を入力してください", key="s_name")
 
-# ★ここから新しく「if」を追加し、以下すべてのコードを「右に4つ」ズラす
+# --- 3. メイン処理（ログインしている場合のみ表示） ---
 if student_id and student_name:
     st.divider()
-    
-    # 2. 問題の表示（ここから下の行はすべて、この if の中身として右にズラす）
+    st.success(f"ログイン中: {student_name} さん")
+
+    # 問題をランダムに1つ選んで保持する
     if "target_q_id" not in st.session_state:
         st.session_state.target_q_id = random.choice(df_questions["id"].tolist())
+
+    q_id = st.session_state.target_q_id
+    q_data = df_questions[df_questions["id"] == q_id].iloc[0]
+
+    # 問題の表示
+    st.write(f"### 今日の挑戦問題：{q_id}")
+    st.subheader(f"分野: {q_data['分野']}")
+    st.info(q_data["問題文"])
+
+    # 選択肢の表示
+    options = [q_data["選択肢1"], q_data["選択肢2"], q_data["選択肢3"], q_data["選択肢4"]]
+    answer = st.radio("答えを選んでください", options)
     
-    # ...（中略：問題表示や送信ボタンのコードが続く）...
+    # 振り返り入力
+    st.warning("🧐 **なぜその選択肢を選びましたか？（根拠を記入）**")
+    reflection = st.text_area("振り返り入力", placeholder="例：〇〇の作用により血管が収縮するため")
 
-else:
-    # まだ名前が入っていない時に表示される画面
-    st.info("👆 学籍番号と氏名を入力すると、問題が表示されます。")
-    
-# 2. 問題の表示（今回は試作として3問からランダムまたは選択）
-if "target_q_id" not in st.session_state:
-    # まだ問題が選ばれていない場合、リストからランダムに1つ選んで保持する
-    st.session_state.target_q_id = random.choice(df_questions["id"].tolist())
+    # 送信ボタン
+    if st.button("回答を送信する"):
+        # GoogleフォームのURL（回答送信専用）
+        form_url = "https://docs.google.com/forms/d/e/1FAIpQLSdlhoQgH7we1JHnb1SEK_3vIBuBteLIfxQcUh1FIvacF82Yyg/formResponse"
+        
+        # 送信データの組み立て
+        params = {
+            "entry.366527335": student_id,
+            "entry.1974944765": student_name,
+            # 必要に応じて問題IDや振り返りのentry IDも追加可能
+        }
 
-q_id = st.session_state.target_q_id
-st.write(f"### 今日の挑戦問題：{q_id}")
+        try:
+            response = requests.post(form_url, data=params)
+            if response.status_code == 200:
+                st.success(f"送信完了！ 正解は「{q_data['正解']}」でした。")
+                st.balloons()
+                st.write("履歴は管理者（対策委員）のスプレッドシートに記録されました。")
+            else:
+                st.error("送信に失敗しました。フォームの設定を確認してください。")
+        except Exception as e:
+            st.error(f"エラーが発生しました: {e}")
 
-# 修正ポイント①：df_questions["id"] を ["id"] に合わせる（スプレッドシートの見出しと一致させる）
-q_data = df_questions[df_questions["id"] == q_id].iloc[0]
-
-st.subheader(f"分野: {q_data['分野']}")
-
-# 修正ポイント②：行の先頭の「余計な空白」を消して、左端に揃える
-st.info(q_data["問題文"])
-
-options = [q_data["選択肢1"], q_data["選択肢2"], q_data["選択肢3"], q_data["選択肢4"]]
-
-# 修正ポイント③：行の先頭の空白を消し、最後にある「 } 」を削除する
-answer = st.radio("答えを選んでください", options)
-    
-# 「なぜ？」の入力欄
-st.warning("🧐 **なぜその選択肢を選びましたか？（根拠を記入）**")
-reflection = st.text_area("振り返り入力", placeholder="例：〇〇の作用により血管が収縮するため")
-
-   # --- 50行目付近にあるはずの送信ボタン ---
-if st.button("回答を送信する"):
-    # 1. 正誤判定（これは今のコードにあるはずです）
-    is_correct = "○" if answer == q_data["正解"] else "×"
-    
-    # 2. Googleフォームの「回答送信専用URL」
-    # ★ここから新しく追加・置き換え！
-    form_url = "https://docs.google.com/forms/d/e/1FAIpQLSdlhoQgH7we1JHnb1SEK_3vIBuBteLIfxQcUh1FIvacF82Yyg/formResponse"
-    
-    # 3. 送信するデータの組み立て（先ほど特定したID）
-    params = {
-        "entry.366527335": student_id,    # 学籍番号
-        "entry.1974944765": student_name,  # 氏名
-        # 「問題ID」や「振り返り」をフォームに追加した場合は、ここも増やします
-    }
-
-    # 4. 裏側で送信！
-   # 中略
-   # --- 70行目：tryは if st.button("回答を送信する"): の「中身」なのでスペース4つ ---
-    try:
-        requests.post(form_url, data=params)
-        st.success(f"送信完了！ 正解は「{q_data['正解']}」でした。")
-        st.balloons()
-    except Exception as e:
-        st.error(f"送信時にエラーが発生しました: {e}")
-
-    # --- try-exceptの外側（送信ボタンの中身の最後） ---
     st.divider()
 
-    # --- ここから「ログイン画面に戻る」ボタンの処理 ---
-    # この st.button 自体は左端に揃えます
-    if st.button("アプリを終了してログイン画面に戻る"):
-        # ボタンの中身は「右に4つ」ズラす
+    # ログアウトボタン
+    if st.button("ログアウトしてログイン画面に戻る"):
         for key in list(st.session_state.keys()):
-            # forの中身は「さらに右に4つ（合計8つ）」ズラす
             del st.session_state[key]
-        
-        # rerunもボタンの中身なので、forと同じ縦ラインに揃える
         st.rerun()
 
-    
-    # 元々あった conn.read や conn.update の古いコードは削除してください
-
-        # --- ここから追加 ---
-        # 既存の回答を読み込んで、新しい回答をくっつける
-        # --- 58行目から62行目あたりをこれ1行に書き換える ---
-        conn.create(spreadsheet="https://docs.google.com/spreadsheets/d/1ZqpqYB5a3BZ--cjB-KGufhXTH6jPeocC-wPbEXVS_ZQ/edit?usp=sharing", worksheet="answers", data=new_answer)
-        # --- ここまで追加 ---
-
-        st.success(f"送信完了！ 正解は「{q_data['正解']}」でした。")
-        st.balloons()
-        
-        # ここで自分の正答率を表示するロジックを将来的に追加
-        st.write("履歴は管理者（対策委員）のスプレッドシートに記録されました。")
+else:
+    # ログインしていない時の表示
+    st.info("👆 学籍番号と氏名を入力すると、問題が表示されます。")
