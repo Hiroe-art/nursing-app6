@@ -67,6 +67,7 @@ if st.button("回答を送信する"):
 
     # 4. 裏側で送信！
    # 中略
+   # --- 70行目：tryは if st.button("回答を送信する"): の「中身」なのでスペース4つ ---
     try:
         requests.post(form_url, data=params)
         st.success(f"送信完了！ 正解は「{q_data['正解']}」でした。")
@@ -74,16 +75,18 @@ if st.button("回答を送信する"):
     except Exception as e:
         st.error(f"送信時にエラーが発生しました: {e}")
 
-    # --- try-exceptの外側（左端）に揃える ---
-    st.divider()  # 区切り線
+    # --- try-exceptの外側（送信ボタンの中身の最後） ---
+    st.divider()
 
-        if st.button("アプリを終了してログイン画面に戻る"):
-        # 1. ここを「右にスペース4つ分」ズラす（ボタンが押された時の処理）
+    # --- ここから「ログイン画面に戻る」ボタンの処理 ---
+    # この st.button 自体は左端に揃えます
+    if st.button("アプリを終了してログイン画面に戻る"):
+        # ボタンの中身は「右に4つ」ズラす
         for key in list(st.session_state.keys()):
-            # 2. ここは「さらに右にスペース4つ分」ズラす（繰り返しの処理）
+            # forの中身は「さらに右に4つ（合計8つ）」ズラす
             del st.session_state[key]
         
-        # 最後に画面をリフレッシュ（これもボタンの中身なので右にズラす）
+        # rerunもボタンの中身なので、forと同じ縦ラインに揃える
         st.rerun()
 
     
