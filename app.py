@@ -24,23 +24,23 @@ with st.container():
 if student_id and student_name:
     st.divider()
     
-    # 2. 問題の表示（今回は試作として3問からランダムまたは選択）
-    if "target_q_id" not in st.session_state:
+# 2. 問題の表示（今回は試作として3問からランダムまたは選択）
+if "target_q_id" not in st.session_state:
     # まだ問題が選ばれていない場合、リストからランダムに1つ選んで保持する
-        st.session_state.target_q_id = random.choice(df_questions["問題ID"].tolist())
+    st.session_state.target_q_id = random.choice(df_questions["問題ID"].tolist())
 
 q_id = st.session_state.target_q_id
-st.write(f"### 今日の挑戦問題：{q_id}")
+    st.write(f"### 今日の挑戦問題：{q_id}")
 q_data = df_questions[df_questions["id"] == q_id].iloc[0]
 
-    st.subheader(f"分野: {q_data['分野']}")
+st.subheader(f"分野: {q_data['分野']}")
     st.info(q_data["問題文"])
     
     options = [q_data["選択肢1"], q_data["選択肢2"], q_data["選択肢3"], q_data["選択肢4"]]
     answer = st.radio("答えを選んでください", options)
     
-    # 「なぜ？」の入力欄
-    st.warning("🧐 **なぜその選択肢を選びましたか？（根拠を記入）**")
+# 「なぜ？」の入力欄
+st.warning("🧐 **なぜその選択肢を選びましたか？（根拠を記入）**")
     reflection = st.text_area("振り返り入力", placeholder="例：〇〇の作用により血管が収縮するため")
 
    # --- 50行目付近にあるはずの送信ボタン ---
