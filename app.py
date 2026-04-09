@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 import datetime
+import requests  # ← これが追加されているか確認！
 
 st.set_page_config(page_title="国試対策プロトタイプ")
 
@@ -36,22 +37,31 @@ if student_id and student_name:
     st.warning("🧐 **なぜその選択肢を選びましたか？（根拠を記入）**")
     reflection = st.text_area("振り返り入力", placeholder="例：〇〇の作用により血管が収縮するため")
 
-    if st.button("回答を送信する"):
-        # 正誤判定
-        is_correct = "○" if answer == q_data["正解"] else "×"
-        
-        # 保存するデータの作成
-        new_answer = pd.DataFrame([{
-            "日時": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
-            "学籍番号": student_id,
-            "氏名": student_name,
-            "問題ID": q_id,
-            "結果": is_correct,
-            "振り返り（なぜ？）": reflection
-        }])
-        
-        # スプレッドシートの「answers」シートに追記
-        # ※実際の運用時は conn.create(worksheet="answers", data=...) 等を使用
+   # --- 50行目付近にあるはずの送信ボタン ---
+if st.button("回答を送信する"):
+    # 1. 正誤判定（これは今のコードにあるはずです）
+    is_correct = "○" if answer == q_data["正解"] else "×"
+    
+    # 2. Googleフォームの「回答送信専用URL」
+    # ★ここから新しく追加・置き換え！
+    form_url = "https://docs.google.com/forms/d/e/1FAIpQLSdlhoQgH7we1JHnb1SEK_3vIBuBteLIfxQcUh1FIvacF82Yyg/formResponse"
+    
+    # 3. 送信するデータの組み立て（先ほど特定したID）
+    params = {
+        "entry.366527335": student_id,    # 学籍番号
+        "entry.1974944765": student_name,  # 氏名
+        # 「問題ID」や「振り返り」をフォームに追加した場合は、ここも増やします
+    }
+    
+    # 4. 裏側で送信！
+    try:
+        requests.post(form_url, data=params) # これがスプレッドシートへの記録の代わりです
+        st.success(f"送信完了！ 正解は「{q_data['正解']}」でした。")
+        st.balloons()
+    except Exception as e:
+        st.error(f"送信時にエラーが発生しました: {e}")
+
+    # 元々あった conn.read や conn.update の古いコードは削除してください
 
         # --- ここから追加 ---
         # 既存の回答を読み込んで、新しい回答をくっつける
