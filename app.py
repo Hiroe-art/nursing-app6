@@ -2,7 +2,8 @@ import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 import datetime
-import requests  # ← これが追加されているか確認！
+import requests 
+import random  
 
 st.set_page_config(page_title="2年生国試対策")
 
@@ -24,7 +25,12 @@ if student_id and student_name:
     st.divider()
     
     # 2. 問題の表示（今回は試作として3問からランダムまたは選択）
-    q_id = st.selectbox("解く問題を選択してください", df_questions["id"])
+    if "target_q_id" not in st.session_state:
+    # まだ問題が選ばれていない場合、リストからランダムに1つ選んで保持する
+    st.session_state.target_q_id = random.choice(df_questions["問題ID"].tolist())
+
+q_id = st.session_state.target_q_id
+st.write(f"### 今日の挑戦問題：{q_id}")
     q_data = df_questions[df_questions["id"] == q_id].iloc[0]
 
     st.subheader(f"分野: {q_data['分野']}")
