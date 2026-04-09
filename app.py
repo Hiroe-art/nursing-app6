@@ -31,7 +31,7 @@ if student_id and student_name:
 
 q_id = st.session_state.target_q_id
 st.write(f"### 今日の挑戦問題：{q_id}")
-    q_data = df_questions[df_questions["id"] == q_id].iloc[0]
+q_data = df_questions[df_questions["id"] == q_id].iloc[0]
 
     st.subheader(f"分野: {q_data['分野']}")
     st.info(q_data["問題文"])
