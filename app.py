@@ -32,8 +32,8 @@ if "target_q_id" not in st.session_state:
 q_id = st.session_state.target_q_id
 st.write(f"### 今日の挑戦問題：{q_id}")
 
-# 修正ポイント①：df_questions["id"] を ["問題ID"] に合わせる（スプレッドシートの見出しと一致させる）
-q_data = df_questions[df_questions["問題ID"] == q_id].iloc[0]
+# 修正ポイント①：df_questions["id"] を ["id"] に合わせる（スプレッドシートの見出しと一致させる）
+q_data = df_questions[df_questions["id"] == q_id].iloc[0]
 
 st.subheader(f"分野: {q_data['分野']}")
 
